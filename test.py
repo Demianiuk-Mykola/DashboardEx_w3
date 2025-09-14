@@ -2,6 +2,8 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 
+#Question #1
+
 st.write("Question #1, Part 1: All genres and amount of Movies belonging to those numbers. Moviea ID might be counted several times because they might belong to several 'genres' siltaneously")
 
 # Load dataset
@@ -28,4 +30,8 @@ fig.add_trace(
 st.write("Question #1, Part 2: Plotting of the stats above")
 
 st.plotly_chart(fig, config={'scrollZoom': False})
-#1
+
+#Question# 2
+
+
+
