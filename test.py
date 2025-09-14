@@ -7,6 +7,7 @@ import altair as alt
 
 
 
+
 st.set_page_config(
     page_title="MoviesRatings",
     page_icon="📽️",
@@ -18,6 +19,9 @@ st.set_page_config(
         'About': "This is my awesome Streamlit app!"
     })
 
+
+
+
 # Question# 1
 #------------------
 
@@ -26,11 +30,19 @@ df = pd.read_csv('data/movie_ratings.csv')
 #------------------
 
 
-# Drop rows where 'genres' is NaN
-df_cleared = df.dropna(subset=['genres']).copy()
+
+with st.sidebar:
+    st.title('📽️*MoviesRatings*📽️')
+    #selectbox for unique Years of cars
+    year_list = sorted(df['year'].dropna().astype(int).unique(), reverse=True)
+    selected_year = st.selectbox("Select a year", year_list)
+    df_selected_year = df[df.year == selected_year]
+    df_selected_year_sorted = df_selected_year.sort_values(by="rating", ascending=False)
+
+
 
 # Group by genres and count movies
-genre_counts = df_cleared.groupby('genres')['movie_id'].count()
+genre_counts = df.groupby('genres')['movie_id'].count()
 
 
 genre_counts_df = genre_counts.reset_index()
@@ -62,7 +74,7 @@ with col[1]:
     # Create plotly scatter
 
     # Compute mean rating per genre
-    genre_mean = df_cleared.groupby('genres')['rating'].mean()
+    genre_mean = df.groupby('genres')['rating'].mean()
     # Convert to DataFrame if you want
     genre_mean_df = genre_mean.reset_index()
     genre_mean_df.columns = ["genres", "mean_rating"]
@@ -90,14 +102,24 @@ with col[1]:
     st.plotly_chart(fig, config={'scrollZoom': False})
 
 #2nd row
-#df = px.data.tips()
-fig = px.histogram(df, x="genres", y="rating",
-                color='year', barmode='group',
-                histfunc='avg',
-                height=400)
 
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
-with tab1:
-    st.plotly_chart(fig, theme="streamlit")
-with tab2:
-    st.plotly_chart(fig, theme=None)
+# Filter movies for the selected year
+# Filter movies for the selected year
+df_selected_year = df[df['year'] == selected_year]
+overall_rating = df_selected_year['rating'].mean()
+
+# Find the previous year available in the dataset
+previous_years = df['year'][df['year'] < selected_year]
+if len(previous_years) > 0:
+    prev_year = previous_years.max()
+    prev_rating = df[df['year'] == prev_year]['rating'].mean()
+    delta = round(overall_rating - prev_rating, 2)
+else:
+    delta = '-'  # no previous year available
+
+# Display in Streamlit metric
+st.metric(
+    label=f"Average Rating in {selected_year}",
+    value=round(overall_rating, 2),
+    delta=delta
+)
