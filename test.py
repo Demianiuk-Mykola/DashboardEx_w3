@@ -5,3 +5,4 @@ st.write("Hello there here world1")
 
 #-------------------------------------------
 
+df = pd.read_csv('/workspaces/DashboardEx_w3/data/movie_ratings.csv')
