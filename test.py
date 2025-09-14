@@ -59,11 +59,18 @@ with col[0]:
 with col[1]:
     st.markdown('#### Question #2')
     # Create plotly scatter
+
+    # Compute mean rating per genre
+    genre_mean = df_cleared.groupby('genres')['rating'].mean()
+    # Convert to DataFrame if you want
+    genre_mean_df = genre_mean.reset_index()
+    genre_mean_df.columns = ["genres", "mean_rating"]
+
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
-            x=genre_counts.index,   # genres
-            y=genre_counts.values,  # counts
+            x=genre_mean.index,   # genres
+            y=genre_mean.values,  # counts
             mode='markers+lines',
             marker=dict(size=10, color='crimson'),
             line=dict(width=3, color='blue'),
@@ -73,10 +80,18 @@ with col[1]:
     fig.update_layout(
         title="Number of Movies per Genre",
         xaxis_title="Genres",
-        yaxis_title="Movie Count",
+        yaxis_title="Rating (Viewer satisfaction)",
         #plot_bgcolor="rgba(245,245,245,1)",
         #paper_bgcolor="white",
         #font=dict(size=14, family="Arial", color="black"),
         xaxis=dict(tickangle=30)
 )
     st.plotly_chart(fig, config={'scrollZoom': False})
+
+col1 = st.columns((1, 1), gap='medium')
+
+with col[0]:
+    st.markdown('#### Question #3')
+
+with col[1]:
+    st.markdown('#### Question #4')
