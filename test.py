@@ -35,7 +35,7 @@ with st.sidebar:
     st.title('📽️*MoviesRatings*📽️')
     #selectbox for unique Years of cars
     year_list = sorted(df['year'].dropna().astype(int).unique(), reverse=True)
-    selected_year = st.selectbox("Select a year", year_list)
+    selected_year = st.selectbox("Average rating for the year:", year_list)
     df_selected_year = df[df.year == selected_year]
     df_selected_year_sorted = df_selected_year.sort_values(by="rating", ascending=False)
 
@@ -51,9 +51,36 @@ genre_counts_df.columns = ["genres", "movie_id"]  # rename for clarity
 col = st.columns((1, 1), gap='medium')
 
 with col[0]:
+    #Question #3
+
+    st.markdown('#### Question #3')
+
+    
+    # Filter movies for the selected year
+    df_selected_year = df[df['year'] == selected_year]
+    overall_rating = round(df_selected_year['rating'].mean(), 2)  # round first
+
+    # Find previous years
+    previous_years = df['year'][df['year'] < selected_year]
+
+    if len(previous_years) > 0:
+        prev_year = previous_years.max()
+        prev_rating = round(df[df['year'] == prev_year]['rating'].mean(), 2)
+        delta = round(overall_rating - prev_rating, 2)  # numeric delta for coloring
+    else:
+        delta = None  # No previous year, Streamlit treats None as no delta
+
+    # Display metric
+    st.metric(
+        label=f"🎬 Average Rating in {selected_year}",
+        value=f"{overall_rating:.2f}",
+        delta=delta  # numeric: green ↑ if positive, red ↓ if negative, neutral if 0
+    )
+    #Question #1
+
+    #2nd row
     st.markdown('#### Question #1')
     st.markdown('###### Movies per Genre')
-
     st.dataframe(
         genre_counts_df,
         column_order=("genres", "movie_id"),
@@ -69,6 +96,7 @@ with col[0]:
             )
         }
     )
+   
 with col[1]:
     st.markdown('#### Question #2')
     # Create plotly scatter
@@ -101,25 +129,3 @@ with col[1]:
 )
     st.plotly_chart(fig, config={'scrollZoom': False})
 
-#2nd row
-
-# Filter movies for the selected year
-# Filter movies for the selected year
-df_selected_year = df[df['year'] == selected_year]
-overall_rating = df_selected_year['rating'].mean()
-
-# Find the previous year available in the dataset
-previous_years = df['year'][df['year'] < selected_year]
-if len(previous_years) > 0:
-    prev_year = previous_years.max()
-    prev_rating = df[df['year'] == prev_year]['rating'].mean()
-    delta = round(overall_rating - prev_rating, 2)
-else:
-    delta = '-'  # no previous year available
-
-# Display in Streamlit metric
-st.metric(
-    label=f"Average Rating in {selected_year}",
-    value=round(overall_rating, 2),
-    delta=delta
-)
