@@ -28,3 +28,4 @@ fig.add_trace(
 st.write("Question #1, Part 2: Plotting of the stats above")
 
 st.plotly_chart(fig, config={'scrollZoom': False})
+#1
