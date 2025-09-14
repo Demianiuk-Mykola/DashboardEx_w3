@@ -27,7 +27,7 @@ fig.add_trace(
         mode='markers+lines'
     )
 )
-st.write("Question #1, Part 2: Plotting of the stats above")
+#st.write("Question #1, Part 2: Plotting of the stats above")
 
 st.plotly_chart(fig, config={'scrollZoom': False})
 
