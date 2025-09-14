@@ -1,7 +1,10 @@
 import streamlit as st
+#from vega_datasets import data
 import plotly.graph_objects as go
+import plotly.express as px
 import pandas as pd
 import altair as alt
+
 
 
 st.set_page_config(
@@ -35,11 +38,9 @@ genre_counts_df.columns = ["genres", "movie_id"]  # rename for clarity
 
 col = st.columns((1, 1), gap='medium')
 
-
-
-
 with col[0]:
     st.markdown('#### Question #1')
+    st.markdown('###### Movies per Genre')
 
     st.dataframe(
         genre_counts_df,
@@ -78,9 +79,9 @@ with col[1]:
         )
     )
     fig.update_layout(
-        title="Number of Movies per Genre",
+        title="Viewer satisfaction",
         xaxis_title="Genres",
-        yaxis_title="Rating (Viewer satisfaction)",
+        yaxis_title="Rating",
         #plot_bgcolor="rgba(245,245,245,1)",
         #paper_bgcolor="white",
         #font=dict(size=14, family="Arial", color="black"),
@@ -88,10 +89,15 @@ with col[1]:
 )
     st.plotly_chart(fig, config={'scrollZoom': False})
 
-col1 = st.columns((1, 1), gap='medium')
+#2nd row
+#df = px.data.tips()
+fig = px.histogram(df, x="genres", y="rating",
+                color='year', barmode='group',
+                histfunc='avg',
+                height=400)
 
-with col[0]:
-    st.markdown('#### Question #3')
-
-with col[1]:
-    st.markdown('#### Question #4')
+tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
+with tab1:
+    st.plotly_chart(fig, theme="streamlit")
+with tab2:
+    st.plotly_chart(fig, theme=None)
