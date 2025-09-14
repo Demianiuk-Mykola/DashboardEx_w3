@@ -1,16 +1,15 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-import numpy as np
+
 st.write("Hello there here world1")
 
-#-------------------------------------------
-#loading everything to dataframe
+# Load dataset
 df = pd.read_csv('data/movie_ratings.csv')
-#getting rid of lines with NaN in 'genres'
-cleared = df.dropna()
-#creating new dataframe to store sanitized rows
-df_cleared = df[cleared].copy()
+
+# Drop rows where 'genres' is NaN
+df_cleared = df.dropna(subset=['genres']).copy()
+
 # Group by genres and count movies
 genre_counts = df_cleared.groupby('genres')['movie_id'].count()
 
