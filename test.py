@@ -21,7 +21,7 @@ fig = go.Figure()
 fig.add_trace(
     go.Scatter(
         x=gb['movie_id'].count(),
-        y=gb
+        y=gb['genres']
     )
 )
 
