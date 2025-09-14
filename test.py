@@ -11,18 +11,20 @@ df = pd.read_csv('data/movie_ratings.csv')
 cleared = df.dropna()
 #creating new dataframe to store sanitized rows
 df_cleared = df[cleared].copy()
-#creating a mask with grouped_by results
-gb = df_cleared.groupby('genres')
-#dispalaying grouped_by results on streamlit page 
-st.write(gb['movie_id'].count())
+# Group by genres and count movies
+genre_counts = df_cleared.groupby('genres')['movie_id'].count()
 
+# Display grouped counts in Streamlit
+st.write(genre_counts)
 
+# Create plotly scatter
 fig = go.Figure()
 fig.add_trace(
     go.Scatter(
-        x=gb['movie_id'].count(),
-        y=gb['genres']
+        x=genre_counts.index,   # genres
+        y=genre_counts.values,  # counts
+        mode='markers+lines'
     )
 )
 
-st.plotly_chart(fig, config = {'scrollZoom': False})
+st.plotly_chart(fig, config={'scrollZoom': False})
