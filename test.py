@@ -49,7 +49,12 @@ unique_movies_per_genre.columns = ["Genre", "Unique Movie Count"]
 
 col = st.columns((1, 1), gap='medium')
 
+
+
+
+
 with col[0]:
+    # column 1 ##################################################
     #Question #3
 
     st.markdown('#### Question #3')
@@ -75,9 +80,11 @@ with col[0]:
         value=f"{overall_rating:.2f}",
         delta=delta  # numeric: green ↑ if positive, red ↓ if negative, neutral if 0
     )
-    #Question #1
+    
 
-    #2nd row
+    #2nd row---------------------------------------------------------
+    
+    #Question #1
     st.markdown('#### Question #1')
     st.markdown('###### Movies per Genre')
     st.dataframe(
@@ -95,11 +102,15 @@ with col[0]:
             )
         }
     )
-   
-with col[1]:
-    st.markdown('#### Question #2')
-    # Create plotly scatter
 
+
+
+
+
+with col[1]:
+    # column 2 #################################################################
+    st.markdown('#### Question #2')
+  
     # Compute mean rating per genre
     genre_mean = df.groupby('genres')['rating'].mean()
     # Convert to DataFrame if you want
@@ -125,6 +136,38 @@ with col[1]:
         #paper_bgcolor="white",
         #font=dict(size=14, family="Arial", color="black"),
         xaxis=dict(tickangle=30)
-)
+        
+    )
     st.plotly_chart(fig, config={'scrollZoom': False})
 
+
+#Question# 4
+# Sum quantity of ratings
+count_ratings = df.groupby('title')['rating'].count().reset_index()
+count_ratings.columns = ['title', 'counted_#_of_ratings']
+
+# Sum values of ratings
+summed_ratings = df.groupby('title')['rating'].sum().reset_index()
+summed_ratings.columns = ['title', 'Summed_values_of ratings']
+
+# Merge the two dataframes on 'title' and divide summed value by summed qantity
+# We get average rating per movie
+merged = pd.merge(summed_ratings, count_ratings, on='title')
+# Compute average rating
+merged['avg_rating'] = merged['Summed_values_of ratings'] / merged['counted_#_of_ratings']
+
+
+popular_movies_50 = merged[merged['counted_#_of_ratings'] > 49]
+# Sort by average rating (highest first)
+popular_movies_sorted_50 = popular_movies_50.sort_values(by='avg_rating', ascending=False).head(5)
+
+st.write(popular_movies_sorted_50)
+
+popular_movies_150 = merged[merged['counted_#_of_ratings'] > 149]
+# Sort by average rating (highest first)
+popular_movies_sorted_150 = popular_movies_150.sort_values(by='avg_rating', ascending=False).head(5)
+
+st.write(popular_movies_sorted_150)
+
+
+   
