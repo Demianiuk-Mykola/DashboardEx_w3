@@ -142,6 +142,7 @@ with col[1]:
 
 
 #Question# 4
+st.markdown('#### Question #4')
 # Sum quantity of ratings
 count_ratings = df.groupby('title')['rating'].count().reset_index()
 count_ratings.columns = ['title', 'counted_#_of_ratings']
@@ -155,18 +156,17 @@ summed_ratings.columns = ['title', 'Summed_values_of ratings']
 merged = pd.merge(summed_ratings, count_ratings, on='title')
 # Compute average rating
 merged['avg_rating'] = merged['Summed_values_of ratings'] / merged['counted_#_of_ratings']
-
-
 popular_movies_50 = merged[merged['counted_#_of_ratings'] > 49]
 # Sort by average rating (highest first)
 popular_movies_sorted_50 = popular_movies_50.sort_values(by='avg_rating', ascending=False).head(5)
 
+st.markdown('######  5 best-rated movies that have at least 50 ratings')
 st.write(popular_movies_sorted_50)
 
 popular_movies_150 = merged[merged['counted_#_of_ratings'] > 149]
 # Sort by average rating (highest first)
 popular_movies_sorted_150 = popular_movies_150.sort_values(by='avg_rating', ascending=False).head(5)
-
+st.markdown('######  5 best-rated movies that have at least 150 ratings')
 st.write(popular_movies_sorted_150)
 
 
