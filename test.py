@@ -22,8 +22,7 @@ st.set_page_config(
 
 
 
-# Question# 1
-#------------------
+
 
 # Load dataset
 df = pd.read_csv('data/movie_ratings.csv')
@@ -39,14 +38,14 @@ with st.sidebar:
     df_selected_year = df[df.year == selected_year]
     df_selected_year_sorted = df_selected_year.sort_values(by="rating", ascending=False)
 
-
+# Question# 1
+#------------------
 
 # Group by genres and count movies
-genre_counts = df.groupby('genres')['movie_id'].count()
+unique_movies_per_genre = df.groupby('genres')['title'].nunique().reset_index()
+unique_movies_per_genre.columns = ["Genre", "Unique Movie Count"]
 
-
-genre_counts_df = genre_counts.reset_index()
-genre_counts_df.columns = ["genres", "movie_id"]  # rename for clarity
+#st.write(unique_movies_per_genre)
 
 col = st.columns((1, 1), gap='medium')
 
@@ -82,17 +81,17 @@ with col[0]:
     st.markdown('#### Question #1')
     st.markdown('###### Movies per Genre')
     st.dataframe(
-        genre_counts_df,
-        column_order=("genres", "movie_id"),
+        unique_movies_per_genre,
+        column_order=("Genre", "Unique Movie Count"),
         hide_index=True,
         width=600,
         column_config={
-            "genres": st.column_config.TextColumn("Genre"),
-            "movie_id": st.column_config.ProgressColumn(
-                "Movies",
+            "Genre": st.column_config.TextColumn("Genre"),
+            "Unique Movie Count": st.column_config.ProgressColumn(
+                "Unique Movie Count",
                 format="%d",
                 min_value=0,
-                max_value=int(genre_counts_df["movie_id"].max())
+                max_value=int(unique_movies_per_genre["Unique Movie Count"].max())
             )
         }
     )
